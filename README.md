@@ -5,12 +5,13 @@
 
 ## Overview
 
-This is a project from [The Odin Project](https://theodinproject.com): [Project: ](#).
+This is a project from [The Odin Project](https://theodinproject.com): [Project: Blog API](https://www.theodinproject.com/lessons/node-path-nodejs-blog-api). This is where we created a Blog website which has an Express server which listens to two front-ends. The first frontend is to allow users to read and comment on posts. The other frontend allows only admin users write, edit and publish posts. This repository is for the public front end for reading and commenting.
 
 ## Learning Points
 
--
--
+- Understand the interaction between a Front-end Web Application like React with an Express Back-end through the use of REST APIs
+- Understand the best practises for the REST API framework and how to create routes for such APIs
+- Implement API security best practises for APIs through the use of JSON Web Tokens and CORS
 
 ## Tech Stack
 
@@ -35,12 +36,12 @@ npm install npm@latest -g
 
 ### Installation
 
-Getting started on running the webpack server to your localhost, localhost:8080
+Getting started on running the vite server on your localhost, localhost:5173
 
 1. Cloning the repository
 
 ```sh
-git clone git@github.com:JohnFerrancol/XX.git
+git clone git@github.com:JohnFerrancol/blog-public-frontend.git
 ```
 
 2. Installing npm packages
@@ -59,5 +60,5 @@ npm run dev
 
 ## Roadmap
 
-- [ ] XXX
-- [ ] XXX
+- [ ] Add sign-up and login forms UI to the webpage
+- [ ] Implement the UI to allow users to views posts and comment on them
