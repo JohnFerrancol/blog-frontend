@@ -7,7 +7,7 @@ const PostCard = ({ id, username, date, title }) => {
       to={`/posts/${id}`}
       className="flex flex-col gap-5 bg-white px-8 py-5 shadow-md rounded-xl"
     >
-      <div class="flex gap-3 items-center">
+      <div className="flex gap-3 items-center">
         <FaUserCircle size={35} />
         <h3 className="text-lg font-bold">{username}</h3>
         <span className="text-lg font-medium">

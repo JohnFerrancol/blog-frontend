@@ -6,7 +6,7 @@ const useBlog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('api/v1/posts');
+        const response = await fetch('/api/v1/posts');
 
         if (!response.ok) throw new Error();
 
@@ -18,10 +18,24 @@ const useBlog = () => {
     };
 
     fetchPosts();
-  }, [posts]);
+  }, []);
+
+  const getPostDetails = async (postId) => {
+    try {
+      const response = await fetch(`/api/v1/posts/${postId}`);
+
+      if (!response.ok) throw new Error();
+
+      const postData = await response.json();
+      return postData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return {
     posts,
+    getPostDetails,
   };
 };
 
