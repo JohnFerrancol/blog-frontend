@@ -33,9 +33,30 @@ const useBlog = () => {
     }
   };
 
+  const addComment = async (postId, token, comment) => {
+    try {
+      const response = await fetch(`/api/v1/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({ comment }),
+      });
+
+      const commentData = await response.json();
+      if (!response.ok) return commentData;
+
+      return commentData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     posts,
     getPostDetails,
+    addComment,
   };
 };
 

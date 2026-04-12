@@ -9,7 +9,7 @@ const useAuth = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch('api/v1/auth/me', {
+        const response = await fetch('/api/v1/auth/me', {
           headers: {
             Authorization: 'Bearer ' + token,
           },
@@ -20,7 +20,7 @@ const useAuth = () => {
         const userData = await response.json();
         setUser(userData.user);
       } catch {
-        console.log('Token no longer valid!');
+        logoutUser();
       }
     };
 

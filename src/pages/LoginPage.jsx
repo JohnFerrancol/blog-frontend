@@ -3,6 +3,7 @@ import InputField from '../components/InputField';
 import { SubmitButton } from '../components/Buttons';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 const LoginPage = () => {
   const { loginUser } = useContext(AuthContext);
@@ -69,7 +70,14 @@ const LoginPage = () => {
           onChange={handleChange}
         />
 
-        <SubmitButton />
+        <SubmitButton text="Log In" />
+
+        <p className="text-center text-lg">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-purple-500 font-semibold text-lg hover:underline">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );

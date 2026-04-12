@@ -9,12 +9,12 @@ const PostPage = () => {
   const { getPostDetails } = useContext(BlogContext);
   const [post, setPost] = useState(null);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      const data = await getPostDetails(id);
-      setPost(data.post);
-    };
+  const fetchPost = async () => {
+    const data = await getPostDetails(id);
+    setPost(data.post);
+  };
 
+  useEffect(() => {
     fetchPost();
   }, [id]);
 
@@ -29,7 +29,7 @@ const PostPage = () => {
         content={post.content}
       />
 
-      <CommentsCard comments={post.comments} />
+      <CommentsCard comments={post.comments} refreshPost={fetchPost} postId={id} />
     </div>
   );
 };

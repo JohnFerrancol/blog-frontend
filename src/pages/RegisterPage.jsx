@@ -3,6 +3,7 @@ import InputField from '../components/InputField';
 import { SubmitButton } from '../components/Buttons';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 const RegisterPage = () => {
   const { registerUser } = useContext(AuthContext);
@@ -81,7 +82,14 @@ const RegisterPage = () => {
           <p className="text-md text-red-400 font-semibold">{confirmPasswordError.msg}</p>
         )}
 
-        <SubmitButton />
+        <SubmitButton text="Register" />
+
+        <p className="text-center text-lg">
+          Have an Account?{' '}
+          <Link to="/login" className="text-purple-500 font-semibold text-lg hover:underline">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
