@@ -2,6 +2,7 @@ import App from '../App';
 import HomePage from '../pages/HomePage';
 import RegisterPage from '../pages/RegisterPage';
 import LoginPage from '../pages/LoginPage';
+import PostPage from '../pages/PostPage';
 
 const routes = [
   {
@@ -11,6 +12,7 @@ const routes = [
       { index: true, element: <HomePage /> },
       { path: 'register', element: <RegisterPage /> },
       { path: 'login', element: <LoginPage /> },
+      { path: 'posts/:id', element: <PostPage /> },
     ],
   },
 ];
