@@ -7,22 +7,36 @@ import { useNavigate } from 'react-router';
 const LoginPage = () => {
   const { loginUser } = useContext(AuthContext);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-
-    const data = Object.fromEntries(formData.entries());
 
     try {
-      const userData = await loginUser(data);
+      const userData = await loginUser(formData);
       console.log(userData);
       if (userData.status === 'success') {
         navigate('/');
         setShowErrorMessage(false);
-      } else if (userData.status === 'error') setShowErrorMessage(true);
+      } else if (userData.status === 'error') {
+        setShowErrorMessage(true);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          password: '',
+        }));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -40,8 +54,20 @@ const LoginPage = () => {
             Invalid Username or Password
           </p>
         )}
-        <InputField id="username" name="username" label="Username" />
-        <InputField id="password" name="password" label="Password" />
+        <InputField
+          id="username"
+          name="username"
+          label="Username"
+          value={formData.username}
+          onChange={handleChange}
+        />
+        <InputField
+          id="password"
+          name="password"
+          label="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
 
         <SubmitButton />
       </form>

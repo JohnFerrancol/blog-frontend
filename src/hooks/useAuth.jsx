@@ -6,7 +6,26 @@ const useAuth = () => {
 
   useEffect(() => {
     if (!token) return;
-  });
+
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('api/v1/auth/me', {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        });
+
+        if (!response.ok) throw new Error();
+
+        const userData = await response.json();
+        setUser(userData.user);
+      } catch {
+        console.log('Token no longer valid!');
+      }
+    };
+
+    fetchUser();
+  }, [token]);
 
   const loginUser = async (formData) => {
     try {
@@ -19,7 +38,7 @@ const useAuth = () => {
       const userData = await response.json();
       if (!response.ok) return userData;
 
-      console.log(userData);
+      localStorage.setItem('token', userData.token);
       setToken(userData.token);
       setUser(userData.user);
 
@@ -40,7 +59,7 @@ const useAuth = () => {
       const userData = await response.json();
       if (!response.ok) return userData;
 
-      console.log(userData);
+      localStorage.setItem('token', userData.token);
       setToken(userData.token);
       setUser(userData.user);
 
@@ -50,11 +69,18 @@ const useAuth = () => {
     }
   };
 
+  const logoutUser = async () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setToken(null);
+  };
+
   return {
     user,
     token,
     loginUser,
     registerUser,
+    logoutUser,
   };
 };
 

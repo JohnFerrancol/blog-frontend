@@ -1,4 +1,4 @@
-export default function InputField({ id, name, value, label, textarea = false }) {
+export default function InputField({ id, name, value, label, textarea = false, onChange }) {
   return (
     <div className="flex flex-col gap-1">
       <label className="font-medium" id={label} htmlFor={id}>
@@ -10,6 +10,7 @@ export default function InputField({ id, name, value, label, textarea = false })
           id={id}
           name={name}
           value={value}
+          onChange={onChange}
         />
       ) : (
         <input
@@ -18,6 +19,7 @@ export default function InputField({ id, name, value, label, textarea = false })
           name={name}
           value={value}
           type={name === 'password' || name === 'confirm-password' ? 'password' : 'text'}
+          onChange={onChange}
         />
       )}
     </div>

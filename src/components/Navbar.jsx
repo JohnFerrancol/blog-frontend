@@ -1,7 +1,10 @@
 import NavLink from './NavLink';
-import { FaBlog } from 'react-icons/fa';
+import { FaBlog, FaUser } from 'react-icons/fa';
+import AuthContext from '../context/AuthContext';
+import { useContext } from 'react';
 
 const Navbar = () => {
+  const { user, logoutUser } = useContext(AuthContext);
   return (
     <nav className="flex justify-between px-8 py-6 bg-purple-500 shadow-xl text-white">
       <NavLink
@@ -14,10 +17,26 @@ const Navbar = () => {
         }
       />
 
-      <div className="flex gap-8 items-center">
-        <NavLink route="/register" content="Register" className="hover:underline text-xl" />
-        <NavLink route="/login" content="Log In" className="hover:underline text-xl" />
-      </div>
+      {user ? (
+        <div className="flex gap-8 items-center">
+          <div className="flex gap-2 items-center">
+            <FaUser className="text-white" size={20} />
+            <p className="text-xl font-semibold">{user.username}</p>
+          </div>
+
+          <button
+            className="text-xl font-semibold cursor-pointer hover:underline"
+            onClick={logoutUser}
+          >
+            Logout
+          </button>
+        </div>
+      ) : (
+        <div className="flex gap-8 items-center">
+          <NavLink route="/register" content="Register" className="hover:underline text-xl" />
+          <NavLink route="/login" content="Log In" className="hover:underline text-xl" />
+        </div>
+      )}
     </nav>
   );
 };
