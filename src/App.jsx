@@ -1,19 +1,19 @@
-import { useState } from 'react';
 import './styles/App.css';
-import Component from './components/Component';
+import { Outlet } from 'react-router';
+
+import Navbar from './components/Navbar';
+import useAuth from './hooks/useAuth';
+import AuthContext from './context/AuthContext';
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const handleClick = () => {
-    setCount(count + 1);
-  };
-
+  const auth = useAuth();
   return (
-    <div className="flex justify-center">
-      <h1 className="text-3xl font-bold">{count}</h1>
-      <Component handleClick={handleClick} />
-    </div>
+    <AuthContext value={auth}>
+      <div className="font-poppins bg-gray-50 min-h-screen flex flex-col">
+        <Navbar />
+        <Outlet />
+      </div>
+    </AuthContext>
   );
 }
 

@@ -60,5 +60,5 @@ npm run dev
 
 ## Roadmap
 
-- [ ] Add sign-up and login forms UI to the webpage
+- [x] Add sign-up and login forms UI to the webpage
 - [ ] Implement the UI to allow users to views posts and comment on them
