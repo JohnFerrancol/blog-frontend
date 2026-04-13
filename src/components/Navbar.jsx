@@ -2,9 +2,16 @@ import NavLink from './NavLink';
 import { FaBlog, FaUser } from 'react-icons/fa';
 import AuthContext from '../context/AuthContext';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router';
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login');
+  };
   return (
     <nav className="flex justify-between px-8 py-6 bg-purple-500 shadow-xl text-white">
       <NavLink
@@ -26,7 +33,7 @@ const Navbar = () => {
 
           <button
             className="text-xl font-semibold cursor-pointer hover:underline"
-            onClick={logoutUser}
+            onClick={handleLogout}
           >
             Logout
           </button>

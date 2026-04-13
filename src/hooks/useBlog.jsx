@@ -53,10 +53,30 @@ const useBlog = () => {
     }
   };
 
+  const deleteComment = async (commentId, token) => {
+    try {
+      const response = await fetch(`/api/v1/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+      });
+
+      const commentData = await response.json();
+      if (!response.ok) return commentData;
+
+      return commentData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     posts,
     getPostDetails,
     addComment,
+    deleteComment,
   };
 };
 

@@ -1,16 +1,18 @@
 import { FaUserCircle } from 'react-icons/fa';
+import { MdDelete, MdModeEditOutline } from 'react-icons/md';
 import AuthContext from '../context/AuthContext';
 import BlogContext from '../context/BlogContext';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router';
-import InputField from './InputField';
 import { SubmitButton } from './Buttons';
 
 const CommentsCard = ({ comments, refreshPost, postId }) => {
   const { user, token } = useContext(AuthContext);
-  const { addComment } = useContext(BlogContext);
+  const { addComment, deleteComment } = useContext(BlogContext);
   const [commentInput, setCommentInput] = useState('');
   const [errorsArray, setErrorsArray] = useState([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
 
   const commentError = errorsArray.find((error) => error.path === 'comment');
 
@@ -25,6 +27,19 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
         refreshPost();
       } else if (commentData.status === 'error') {
         setErrorsArray(commentData.errorArray);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const commentData = await deleteComment(selectedCommentId, token);
+      if (commentData.status === 'success') {
+        setSelectedCommentId(null);
+        setShowConfirm(false);
+        refreshPost();
       }
     } catch (error) {
       console.log(error);
@@ -58,25 +73,68 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
         </Link>
       )}
 
-      <div className="mt-5 flex flex-col gap-7">
+      <div className="mt-5 flex flex-col gap-5 w-1/3">
         {comments.map((comment) => (
-          <div key={comment.id} className="flex flex-col gap-2">
-            <div className="flex gap-2 items-center">
-              <FaUserCircle size={25} />
-              <h3 className="text-lg font-semibold">{comment.user.username}</h3>
-              <p className="text-lg font-semibold">
-                {new Date(comment.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </p>
+          <>
+            <div key={comment.id} className="grid grid-cols-10 gap-2 group">
+              <div className="col-span-9 flex flex-col gap-2">
+                <div className="flex gap-2 items-center">
+                  <FaUserCircle size={25} />
+                  <h3 className="text-lg font-semibold">{comment.user.username}</h3>
+                  <p className="text-lg font-semibold">
+                    {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </p>
+                </div>
+                <p>{comment.content}</p>
+              </div>
+
+              {user?.id === comment.user.id && (
+                <div className="flex gap-2">
+                  <button className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                    <MdModeEditOutline size={25} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedCommentId(comment.id);
+                      setShowConfirm(true);
+                    }}
+                    className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <MdDelete size={25} />
+                  </button>
+                </div>
+              )}
             </div>
-            <p>{comment.content}</p>
             <hr className="my-1 border-gray-300" />
-          </div>
+          </>
         ))}
       </div>
+
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+          <div className="bg-white p-6 rounded-xl shadow-md flex flex-col gap-4 w-80">
+            <h2 className="text-lg font-semibold">Delete Comment?</h2>
+            <p className="text-sm text-gray-600">Are you sure you want to delete this comment?</p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 rounded-md bg-gray-200"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
+
+              <button className="px-4 py-2 rounded-md bg-red-400 text-white" onClick={handleDelete}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
