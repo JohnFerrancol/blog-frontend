@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const useBlog = () => {
   const [posts, setPosts] = useState([]);
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch('/api/v1/posts');
+      const response = await fetch(`${API_URL}/api/v1/posts`);
 
       if (!response.ok) throw new Error();
 
@@ -22,7 +24,7 @@ const useBlog = () => {
 
   const getPostDetails = async (postId) => {
     try {
-      const response = await fetch(`/api/v1/posts/${postId}`);
+      const response = await fetch(`${API_URL}/api/v1/posts/${postId}`);
 
       if (!response.ok) throw new Error();
 
@@ -35,7 +37,7 @@ const useBlog = () => {
 
   const createPost = async (token, formData) => {
     try {
-      const response = await fetch(`/api/v1/posts/`, {
+      const response = await fetch(`${API_URL}/api/v1/posts/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +58,7 @@ const useBlog = () => {
 
   const updatePost = async (postId, token, formData) => {
     try {
-      const response = await fetch(`/api/v1/posts/${postId}`, {
+      const response = await fetch(`${API_URL}/api/v1/posts/${postId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +79,7 @@ const useBlog = () => {
 
   const deletePost = async (postId, token) => {
     try {
-      const response = await fetch(`/api/v1/posts/${postId}`, {
+      const response = await fetch(`${API_URL}/api/v1/posts/${postId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +99,7 @@ const useBlog = () => {
 
   const addComment = async (postId, token, comment) => {
     try {
-      const response = await fetch(`/api/v1/posts/${postId}/comments`, {
+      const response = await fetch(`${API_URL}/api/v1/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +119,7 @@ const useBlog = () => {
 
   const updateComment = async (commentId, token, comment) => {
     try {
-      const response = await fetch(`/api/v1/comments/${commentId}`, {
+      const response = await fetch(`${API_URL}/api/v1/comments/${commentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +139,7 @@ const useBlog = () => {
 
   const deleteComment = async (commentId, token) => {
     try {
-      const response = await fetch(`/api/v1/comments/${commentId}`, {
+      const response = await fetch(`${API_URL}/api/v1/comments/${commentId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

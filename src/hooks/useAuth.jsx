@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const useAuth = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ const useAuth = () => {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch('/api/v1/auth/me', {
+        const response = await fetch(`${API_URL}/api/v1/auth/me`, {
           headers: {
             Authorization: 'Bearer ' + token,
           },
@@ -35,7 +37,7 @@ const useAuth = () => {
 
   const loginUser = async (formData) => {
     try {
-      const response = await fetch('/api/v1/auth/login', {
+      const response = await fetch(`${API_URL}/api/v1/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -56,7 +58,7 @@ const useAuth = () => {
 
   const registerUser = async (formData) => {
     try {
-      const response = await fetch('/api/v1/auth/register', {
+      const response = await fetch(`${API_URL}/api/v1/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
