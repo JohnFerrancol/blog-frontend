@@ -8,25 +8,58 @@ import { SubmitButton } from './Buttons';
 
 const CommentsCard = ({ comments, refreshPost, postId }) => {
   const { user, token } = useContext(AuthContext);
-  const { addComment, deleteComment } = useContext(BlogContext);
+  const { addComment, updateComment, deleteComment } = useContext(BlogContext);
   const [commentInput, setCommentInput] = useState('');
-  const [errorsArray, setErrorsArray] = useState([]);
+  const [errorsArray, setErrorsArray] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [editInput, setEditInput] = useState('');
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState(null);
+  const [originalComment, setOriginalComment] = useState('');
 
-  const commentError = errorsArray.find((error) => error.path === 'comment');
-
-  const onSubmit = async (e) => {
+  const onAdd = async (e) => {
     e.preventDefault();
 
     try {
       const commentData = await addComment(postId, token, commentInput);
       if (commentData.status === 'success') {
         setCommentInput('');
-        setErrorsArray([]);
+        setErrorsArray({});
         refreshPost();
       } else if (commentData.status === 'error') {
-        setErrorsArray(commentData.errorArray);
+        setErrorsArray({
+          input: 'add',
+          error: commentData.errorArray[0].msg,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onUpdate = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (originalComment === editInput) {
+        setErrorsArray({
+          input: 'update',
+          error: 'No changes detected',
+        });
+        return;
+      }
+      const commentData = await updateComment(selectedCommentId, token, editInput);
+      if (commentData.status === 'success') {
+        setIsEditing(false);
+        setSelectedCommentId(false);
+        setEditInput('');
+        setErrorsArray({});
+        refreshPost();
+      } else if (commentData.status === 'error') {
+        setErrorsArray({
+          input: 'update',
+          error: commentData.errorArray[0].msg,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -50,11 +83,11 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
       <h2 className="text-2xl font-bold mb-3">Comments</h2>
 
       {user ? (
-        <form onSubmit={onSubmit} className="w-1/3 flex flex-col gap-2">
+        <form onSubmit={onAdd} className="w-1/3 flex flex-col gap-2">
           <h3 className="font-medium">Add Comment</h3>
           <div className="grid grid-cols-6 gap-2">
             <textarea
-              className={`${commentError ? 'border-red-400' : 'border-purple-500'} col-span-5 font-medium bg-white w-full px-2 py-1 border rounded-lg shadow-xs focus:outline-none focus:border-2`}
+              className={`${errorsArray.input === 'add' ? 'border-red-400' : 'border-purple-500'} col-span-5 font-medium bg-white w-full px-2 py-1 border rounded-lg shadow-xs focus:outline-none focus:border-2`}
               id="comment"
               name="comment"
               value={commentInput}
@@ -65,7 +98,9 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
             <SubmitButton additionalClasses="py-1 col-span-1" text="Add" />
           </div>
 
-          {commentError && <p className="text-md text-red-400 font-semibold">{commentError.msg}</p>}
+          {errorsArray.input === 'add' && (
+            <p className="text-md text-red-400 font-semibold">{errorsArray.error}</p>
+          )}
         </form>
       ) : (
         <Link to="/login" className="text-purple-500 font-semibold text-lg hover:underline">
@@ -75,8 +110,8 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
 
       <div className="mt-5 flex flex-col gap-5 w-1/3">
         {comments.map((comment) => (
-          <>
-            <div key={comment.id} className="grid grid-cols-10 gap-2 group">
+          <div key={comment.id}>
+            <div className="grid grid-cols-10 gap-2 group">
               <div className="col-span-9 flex flex-col gap-2">
                 <div className="flex gap-2 items-center">
                   <FaUserCircle size={25} />
@@ -89,12 +124,52 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
                     })}
                   </p>
                 </div>
-                <p>{comment.content}</p>
+                {selectedCommentId === comment.id && isEditing ? (
+                  <form onSubmit={onUpdate} className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <input
+                        value={editInput}
+                        onChange={(e) => setEditInput(e.target.value)}
+                        className={`${errorsArray.input === 'update' ? 'border-red-400' : 'border-purple-500'} col-span-5 font-medium bg-white w-full px-2 py-1 border rounded-lg shadow-xs focus:outline-none focus:border-2`}
+                      />
+
+                      <button type="submit" className="bg-purple-500 text-white px-3 rounded">
+                        Save
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsEditing(false);
+                          setSelectedCommentId(false);
+                          setEditInput('');
+                        }}
+                        className="bg-gray-200 px-3 rounded"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+
+                    {errorsArray.input === 'update' && (
+                      <p className="text-md text-red-400 font-semibold">{errorsArray.error}</p>
+                    )}
+                  </form>
+                ) : (
+                  <p>{comment.content}</p>
+                )}
               </div>
 
-              {user?.id === comment.user.id && (
+              {user?.id === comment.user.id && !isEditing && (
                 <div className="flex gap-2">
-                  <button className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => {
+                      setEditInput(comment.content);
+                      setOriginalComment(comment.content);
+                      setSelectedCommentId(comment.id);
+                      setIsEditing(true);
+                    }}
+                    className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
                     <MdModeEditOutline size={25} />
                   </button>
                   <button
@@ -109,8 +184,8 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
                 </div>
               )}
             </div>
-            <hr className="my-1 border-gray-300" />
-          </>
+            <hr className="my-3 border-gray-300" />
+          </div>
         ))}
       </div>
 

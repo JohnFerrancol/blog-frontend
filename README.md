@@ -61,5 +61,5 @@ npm run dev
 ## Roadmap
 
 - [x] Add sign-up and login forms UI to the webpage
-- [ ] Implement the UI to allow users to view posts and comment on them
+- [x] Implement the UI to allow users to view posts and comment on them
 - [ ] Implement the UI to only allow admins to create, delete and update post content

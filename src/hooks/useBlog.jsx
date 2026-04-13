@@ -53,6 +53,26 @@ const useBlog = () => {
     }
   };
 
+  const updateComment = async (commentId, token, comment) => {
+    try {
+      const response = await fetch(`/api/v1/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({ comment }),
+      });
+
+      const commentData = await response.json();
+      if (!response.ok) return commentData;
+
+      return commentData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const deleteComment = async (commentId, token) => {
     try {
       const response = await fetch(`/api/v1/comments/${commentId}`, {
@@ -76,6 +96,7 @@ const useBlog = () => {
     posts,
     getPostDetails,
     addComment,
+    updateComment,
     deleteComment,
   };
 };
