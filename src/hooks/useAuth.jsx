@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
     const fetchUser = async () => {
       try {
@@ -21,6 +25,8 @@ const useAuth = () => {
         setUser(userData.user);
       } catch {
         logoutUser();
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -78,6 +84,7 @@ const useAuth = () => {
   return {
     user,
     token,
+    loading,
     loginUser,
     registerUser,
     logoutUser,

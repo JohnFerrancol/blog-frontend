@@ -3,20 +3,20 @@ import { useState, useEffect } from 'react';
 const useBlog = () => {
   const [posts, setPosts] = useState([]);
 
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/v1/posts');
+
+      if (!response.ok) throw new Error();
+
+      const postsData = await response.json();
+      setPosts(postsData.posts);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch('/api/v1/posts');
-
-        if (!response.ok) throw new Error();
-
-        const postsData = await response.json();
-        setPosts(postsData.posts);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchPosts();
   }, []);
 
@@ -27,6 +27,27 @@ const useBlog = () => {
       if (!response.ok) throw new Error();
 
       const postData = await response.json();
+      return postData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createPost = async (token, formData) => {
+    try {
+      const response = await fetch(`/api/v1/posts/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const postData = await response.json();
+      if (!response.ok) return postData;
+
+      fetchPosts();
       return postData;
     } catch (error) {
       console.log(error);
@@ -95,6 +116,7 @@ const useBlog = () => {
   return {
     posts,
     getPostDetails,
+    createPost,
     addComment,
     updateComment,
     deleteComment,

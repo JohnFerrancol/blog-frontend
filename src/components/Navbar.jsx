@@ -31,6 +31,10 @@ const Navbar = () => {
             <p className="text-xl font-semibold">{user.username}</p>
           </div>
 
+          {user.role === 'admin' && (
+            <NavLink route="/posts/new" content="New Post" className="hover:underline text-xl" />
+          )}
+
           <button
             className="text-xl font-semibold cursor-pointer hover:underline"
             onClick={handleLogout}
