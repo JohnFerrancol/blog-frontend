@@ -61,6 +61,7 @@ const RegisterPage = () => {
           label="Username"
           value={formData.username}
           onChange={handleChange}
+          borderColor={usernameError ? 'border-red-400' : 'border-purple-500'}
         />
         {usernameError && <p className="text-md text-red-400 font-semibold">{usernameError.msg}</p>}
         <InputField
@@ -69,6 +70,7 @@ const RegisterPage = () => {
           label="Password"
           value={formData.password}
           onChange={handleChange}
+          borderColor={passwordError ? 'border-red-400' : 'border-purple-500'}
         />
         {passwordError && <p className="text-md text-red-400 font-semibold">{passwordError.msg}</p>}
         <InputField
@@ -77,12 +79,13 @@ const RegisterPage = () => {
           label="Confirm Password"
           value={formData['confirm-password']}
           onChange={handleChange}
+          borderColor={confirmPasswordError ? 'border-red-400' : 'border-purple-500'}
         />
         {confirmPasswordError && (
           <p className="text-md text-red-400 font-semibold">{confirmPasswordError.msg}</p>
         )}
 
-        <SubmitButton text="Register" />
+        <SubmitButton text="Register" additionalClasses="py-3" />
 
         <p className="text-center text-lg">
           Have an Account?{' '}

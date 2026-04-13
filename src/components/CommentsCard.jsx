@@ -35,17 +35,22 @@ const CommentsCard = ({ comments, refreshPost, postId }) => {
       <h2 className="text-2xl font-bold mb-3">Comments</h2>
 
       {user ? (
-        <form onSubmit={onSubmit} className="w-1/5 flex flex-col gap-2">
-          <InputField
-            id="comment"
-            name="comment"
-            label=""
-            value={commentInput}
-            onChange={(e) => setCommentInput(e.target.value)}
-          />
-          {commentError && <p className="text-md text-red-400 font-semibold">{commentError.msg}</p>}
+        <form onSubmit={onSubmit} className="w-1/3 flex flex-col gap-2">
+          <h3 className="font-medium">Add Comment</h3>
+          <div className="grid grid-cols-6 gap-2">
+            <textarea
+              className={`${commentError ? 'border-red-400' : 'border-purple-500'} col-span-5 font-medium bg-white w-full px-2 py-1 border rounded-lg shadow-xs focus:outline-none focus:border-2`}
+              id="comment"
+              name="comment"
+              value={commentInput}
+              type="text"
+              onChange={(e) => setCommentInput(e.target.value)}
+            />
 
-          <SubmitButton text="Add Comment" />
+            <SubmitButton additionalClasses="py-1 col-span-1" text="Add" />
+          </div>
+
+          {commentError && <p className="text-md text-red-400 font-semibold">{commentError.msg}</p>}
         </form>
       ) : (
         <Link to="/login" className="text-purple-500 font-semibold text-lg hover:underline">

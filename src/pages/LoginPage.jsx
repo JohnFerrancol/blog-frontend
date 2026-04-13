@@ -61,6 +61,7 @@ const LoginPage = () => {
           label="Username"
           value={formData.username}
           onChange={handleChange}
+          borderColor={showErrorMessage ? 'border-red-400' : 'border-purple-500'}
         />
         <InputField
           id="password"
@@ -68,9 +69,10 @@ const LoginPage = () => {
           label="Password"
           value={formData.password}
           onChange={handleChange}
+          borderColor={showErrorMessage ? 'border-red-400' : 'border-purple-500'}
         />
 
-        <SubmitButton text="Log In" />
+        <SubmitButton text="Log In" additionalClasses="py-3" />
 
         <p className="text-center text-lg">
           Don't have an account?{' '}
