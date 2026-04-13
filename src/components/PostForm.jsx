@@ -1,21 +1,32 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import AuthContext from '../context/AuthContext';
 import BlogContext from '../context/BlogContext';
 import { SubmitButton } from './Buttons';
 import InputField from './InputField';
 
-const PostForm = ({ mode }) => {
+const PostForm = ({ mode, initialData }) => {
   const { token } = useContext(AuthContext);
-  const { createPost } = useContext(BlogContext);
+  const { createPost, updatePost } = useContext(BlogContext);
   const [errorsArray, setErrorsArray] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
   });
 
-  const titleError = errorsArray.find((error) => error.path === 'title');
-  const contentError = errorsArray.find((error) => error.path === 'content');
+  const titleError = errorsArray.find((error) => error.path === 'title' || error.path === 'form');
+  const contentError = errorsArray.find(
+    (error) => error.path === 'content' || error.path === 'form'
+  );
+
+  useEffect(() => {
+    if (mode === 'edit' && initialData) {
+      setFormData({
+        title: initialData.title,
+        content: initialData.content,
+      });
+    }
+  }, [initialData]);
 
   const handleChange = (e) => {
     setFormData({
@@ -29,7 +40,24 @@ const PostForm = ({ mode }) => {
     e.preventDefault();
 
     try {
-      const postData = await createPost(token, formData);
+      let postData;
+      if (mode === 'create') {
+        postData = await createPost(token, formData);
+      } else {
+        const fieldsToCompare = ['title', 'content'];
+
+        const hasChanges = fieldsToCompare.some((key) => formData[key] !== initialData[key]);
+        if (!hasChanges) {
+          setErrorsArray([
+            {
+              msg: 'No Changes Detected',
+              path: 'form',
+            },
+          ]);
+          return;
+        }
+        postData = await updatePost(initialData.id, token, formData);
+      }
       if (postData.status === 'success') {
         navigate('/');
         setErrorsArray([]);
@@ -68,7 +96,7 @@ const PostForm = ({ mode }) => {
         textarea={true}
         value={formData.content}
         onChange={handleChange}
-        borderColor={contentError ? 'border-red-400' : 'border-purple-500'}
+        borderColor={contentError ? 'border-red-400 h-50' : 'border-purple-500 h-50'}
       />
       {contentError && <p className="text-md text-red-400 font-semibold">{contentError.msg}</p>}
 

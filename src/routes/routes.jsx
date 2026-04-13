@@ -3,8 +3,9 @@ import HomePage from '../pages/HomePage';
 import RegisterPage from '../pages/RegisterPage';
 import LoginPage from '../pages/LoginPage';
 import PostPage from '../pages/PostPage';
-import CreatePostPage from '../pages/CreatePostPage';
 import AdminRoute from './AdminRoute';
+import CreatePostPage from '../pages/CreatePostPage';
+import EditPostPage from '../pages/EditPostPage';
 
 const routes = [
   {
@@ -20,6 +21,14 @@ const routes = [
         element: (
           <AdminRoute>
             <CreatePostPage />{' '}
+          </AdminRoute>
+        ),
+      },
+      {
+        path: 'posts/:id/edit',
+        element: (
+          <AdminRoute>
+            <EditPostPage />{' '}
           </AdminRoute>
         ),
       },
